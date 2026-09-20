@@ -1,0 +1,4 @@
+export const metadata = { title: "Privacy Policy" };
+export default function Privacy() {
+  return <article className="container-x max-w-4xl py-24"><div className="eyebrow">Legal</div><h1 className="mt-4 text-5xl font-semibold">Privacy Policy</h1><p className="mt-5 text-zinc-600">This starter policy is a placeholder and should be reviewed and finalized for your actual website, products, data practices and applicable law.</p><div className="prose prose-zinc mt-10 max-w-none"><h2>Information we collect</h2><p>We may receive information that you voluntarily submit through contact, career or business enquiry forms.</p><h2>How we use information</h2><p>Information may be used to respond to enquiries, provide requested services and improve our products and communications.</p><h2>Contact</h2><p>For privacy-related questions, contact info@sevamanjari.com.</p></div></article>
+}
