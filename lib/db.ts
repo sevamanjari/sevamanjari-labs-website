@@ -7,6 +7,9 @@ import { ProjectModel } from "@/models/Project";
 import { EnquiryModel } from "@/models/Enquiry";
 import { SettingsModel } from "@/models/Settings";
 import { JobApplicationModel } from "@/models/JobApplication";
+import { ensureEnvironmentLoaded } from "./env";
+
+ensureEnvironmentLoaded();
 
 export interface JobVacancy {
   id: string;

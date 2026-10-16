@@ -2,6 +2,9 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { connectToDatabase } from "./mongodb";
 import { OfficialModel } from "@/models/Official";
+import { ensureEnvironmentLoaded } from "./env";
+
+ensureEnvironmentLoaded();
 
 const SECRET_KEY = new TextEncoder().encode(
   process.env.JWT_SECRET || "sevamanjari-super-secure-official-jwt-secret-key-2026"
