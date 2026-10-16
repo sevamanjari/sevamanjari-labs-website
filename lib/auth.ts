@@ -55,6 +55,7 @@ export async function authenticateOfficial(
 
   try {
     await connectToDatabase();
+    await ensureDefaultOfficial();
 
     const official = await OfficialModel.findOne({ email }).lean();
     if (official && official.passwordHash) {
