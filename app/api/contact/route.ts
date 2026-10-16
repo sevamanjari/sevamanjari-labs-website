@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { saveEnquiry } from "@/lib/db";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request);
+    const isAllowed = checkRateLimit(`contact_${clientIp}`, 5, 10 * 60 * 1000);
+    if (!isAllowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Too many enquiries submitted from this network. Please wait a few minutes before trying again.",
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
 
     const name = String(body.name || "").trim();
@@ -46,31 +60,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.error("SMTP credentials are not configured.");
-
-      return NextResponse.json(
-        { message: "Email service is temporarily unavailable." },
-        { status: 500 }
-      );
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtpout.secureserver.net",
-      port: Number(process.env.SMTP_PORT || 465),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+    // Always persist inquiry to database
+    await saveEnquiry({
+      name,
+      email,
+      phone,
+      company: company || undefined,
+      subject: subject || undefined,
+      message,
     });
 
-    await transporter.sendMail({
-      from: `"SevaManjari Labs Website" <${process.env.SMTP_USER}>`,
-      to: "info@sevamanjarilabs.in",
-      replyTo: email,
-      subject: `Website Enquiry: ${subject || "Contact Us"}`,
-      text: `
+    // Try sending email if SMTP credentials are provided
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST || "smtpout.secureserver.net",
+          port: Number(process.env.SMTP_PORT || 465),
+          secure: true,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        await transporter.sendMail({
+          from: `"SevaManjari Labs Website" <${process.env.SMTP_USER}>`,
+          to: "info@sevamanjarilabs.in",
+          replyTo: email,
+          subject: `Website Enquiry: ${subject || "Contact Us"}`,
+          text: `
 New enquiry received from the SevaManjari Labs website.
 
 Name: ${name}
@@ -81,13 +99,20 @@ Subject: ${subject || "Not provided"}
 
 Message:
 ${message}
-      `.trim(),
-    });
+          `.trim(),
+        });
+      } catch (mailError) {
+        console.warn("SMTP email dispatch warning:", mailError);
+        // We still succeed since enquiry is saved to database
+      }
+    } else {
+      console.log("Local mode: Enquiry saved to database (SMTP not configured).");
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Thank you. Your enquiry has been sent successfully.",
+        message: "Thank you. Your enquiry has been received successfully.",
       },
       { status: 200 }
     );

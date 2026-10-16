@@ -3,5 +3,82 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
-const links = [["About","/about"],["Services","/services"],["Products","/products"],["Careers","/careers"],["Contact","/contact"]];
-export default function Navbar(){const[open,setOpen]=useState(false);return <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-[#fffaf2]/90 backdrop-blur-xl"><div className="container-x flex h-[78px] items-center justify-between"><Link href="/" onClick={()=>setOpen(false)} aria-label="SevaManjari Labs home"><Image src="/logo.png" alt="SevaManjari Labs Private Limited" width={230} height={86} className="h-[62px] w-auto object-contain" priority/></Link><nav className="hidden items-center gap-7 md:flex">{links.map(([label,href])=><Link key={href} href={href} className="text-sm font-medium text-zinc-700 hover:text-[#8b0000]">{label}</Link>)}<Link href="/contact" className="btn-primary py-2.5">Start a conversation <ArrowUpRight size={16}/></Link></nav><button className="rounded-xl p-2 md:hidden" onClick={()=>setOpen(!open)} aria-label="Toggle menu">{open?<X/>:<Menu/>}</button></div>{open&&<div className="border-t border-zinc-200 bg-[#fffaf2] px-5 py-5 md:hidden"><nav className="container-x flex flex-col gap-4">{links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)} className="py-1 text-base font-semibold">{label}</Link>)}<Link href="/contact" onClick={()=>setOpen(false)} className="btn-primary">Start a conversation</Link></nav></div>}</header>}
+import { usePathname } from "next/navigation";
+
+const links = [
+  ["About", "/about"],
+  ["Services", "/services"],
+  ["Products", "/products"],
+  ["Careers", "/careers"],
+  ["Contact", "/contact"],
+];
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/admin") ||
+    pathname === "/login"
+  ) {
+    return null;
+  }
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-[#fffaf2]/90 backdrop-blur-xl">
+      <div className="container-x flex h-[78px] items-center justify-between">
+        <Link href="/" onClick={() => setOpen(false)} aria-label="SevaManjari Labs home">
+          <Image
+            src="/logo.png"
+            alt="SevaManjari Labs Private Limited"
+            width={230}
+            height={86}
+            className="h-[62px] w-auto object-contain"
+            priority
+          />
+        </Link>
+        <nav className="hidden items-center gap-7 md:flex">
+          {links.map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className="text-sm font-medium text-zinc-700 hover:text-[#8b0000] transition-colors"
+            >
+              {label}
+            </Link>
+          ))}
+          <Link href="/contact" className="btn-primary py-2.5">
+            Start a conversation <ArrowUpRight size={16} />
+          </Link>
+        </nav>
+        <button
+          className="rounded-xl p-2 md:hidden"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
+          {open ? <X /> : <Menu />}
+        </button>
+      </div>
+      {open && (
+        <div className="border-t border-zinc-200 bg-[#fffaf2] px-5 py-5 md:hidden">
+          <nav className="container-x flex flex-col gap-4">
+            {links.map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className="py-1 text-base font-semibold"
+              >
+                {label}
+              </Link>
+            ))}
+            <Link href="/contact" onClick={() => setOpen(false)} className="btn-primary">
+              Start a conversation
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}

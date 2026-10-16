@@ -1,4 +1,81 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
-export default function Footer(){return <footer className="border-t border-[#5d0a0a] bg-[#210606] text-white"><div className="container-x py-14"><div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4"><div className="lg:col-span-2"><div className="mb-5 inline-flex rounded-2xl bg-white/95 px-4 py-2"><Image src="/logo.png" alt="SevaManjari Labs Private Limited" width={250} height={94} className="h-20 w-auto object-contain"/></div><p className="max-w-xl text-zinc-300">A technology company building digital products, platforms and practical software solutions from India.</p></div><div><h3 className="mb-4 text-sm font-semibold">Explore</h3><div className="grid gap-3 text-sm text-zinc-300"><Link href="/about" className="hover:text-amber-300">About</Link><Link href="/corporate-information" className="hover:text-amber-300">Corporate Information</Link><Link href="/services" className="hover:text-amber-300">Services</Link><Link href="/products" className="hover:text-amber-300">Products</Link><Link href="/careers" className="hover:text-amber-300">Careers</Link></div></div><div><h3 className="mb-4 text-sm font-semibold">Contact</h3><div className="grid gap-3 text-sm text-zinc-300"><a href="mailto:info@sevamanjari.com" className="flex gap-2 hover:text-amber-300"><Mail size={16}/> info@sevamanjari.com</a><a href="tel:+919103963025" className="flex gap-2 hover:text-amber-300"><Phone size={16}/> +91 91039 63025</a><span className="flex gap-2"><MapPin size={16}/> Manawar, Dhar, Madhya Pradesh, India</span></div></div></div><div className="mt-12 border-t border-white/10 pt-6 text-xs text-zinc-400"><div className="flex flex-col justify-between gap-4 lg:flex-row"><div className="max-w-3xl"><span>© {new Date().getFullYear()} SevaManjari Labs Private Limited. All rights reserved.</span><div className="mt-2 text-[11px] leading-5 text-zinc-500">CIN: U62011MP2026PTC086722 · Registered Office: C/O Ramesh Babulal, Balipur Manawar Rural, Manawar, Dhar – 454446, Madhya Pradesh, India</div></div><div className="flex gap-5"><Link href="/privacy" className="hover:text-white">Privacy</Link><Link href="/terms" className="hover:text-white">Terms</Link><Link href="/contact" className="flex items-center gap-1 hover:text-white">Get in touch <ArrowUpRight size={12}/></Link></div></div></div></div></footer>}
+import { usePathname } from "next/navigation";
+
+export default function Footer() {
+  const pathname = usePathname();
+
+  if (
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/admin") ||
+    pathname === "/login"
+  ) {
+    return null;
+  }
+
+  return (
+    <footer className="border-t border-[#5d0a0a] bg-[#210606] text-white">
+      <div className="container-x py-14">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+          <div className="lg:col-span-2">
+            <div className="mb-5 inline-flex rounded-2xl bg-white/95 px-4 py-2">
+              <Image
+                src="/logo.png"
+                alt="SevaManjari Labs Private Limited"
+                width={250}
+                height={94}
+                className="h-20 w-auto object-contain"
+              />
+            </div>
+            <p className="max-w-xl text-zinc-300">
+              A technology company building digital products, platforms and practical software solutions from India.
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-semibold">Explore</h3>
+            <div className="grid gap-3 text-sm text-zinc-300">
+              <Link href="/about" className="hover:text-amber-300">About</Link>
+              <Link href="/corporate-information" className="hover:text-amber-300">Corporate Information</Link>
+              <Link href="/services" className="hover:text-amber-300">Services</Link>
+              <Link href="/products" className="hover:text-amber-300">Products</Link>
+              <Link href="/careers" className="hover:text-amber-300">Careers</Link>
+            </div>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-semibold">Contact</h3>
+            <div className="grid gap-3 text-sm text-zinc-300">
+              <a href="mailto:info@sevamanjarilabs.in" className="flex items-center gap-2 hover:text-amber-300">
+                <Mail size={16} /> info@sevamanjarilabs.in
+              </a>
+              <a href="tel:+919103963025" className="flex items-center gap-2 hover:text-amber-300">
+                <Phone size={16} /> +91 91039 63025
+              </a>
+              <span className="flex items-start gap-2">
+                <MapPin size={16} className="mt-1 shrink-0" /> Manawar, Dhar, Madhya Pradesh, India
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 border-t border-white/10 pt-6 text-xs text-zinc-400">
+          <div className="flex flex-col justify-between gap-4 lg:flex-row">
+            <div className="max-w-3xl">
+              <span>© {new Date().getFullYear()} SevaManjari Labs Private Limited. All rights reserved.</span>
+              <div className="mt-2 text-[11px] leading-5 text-zinc-500">
+                CIN: U62011MP2026PTC086722 · Registered Office: C/O Ramesh Babulal, Balipur Manawar Rural, Manawar, Dhar – 454446, Madhya Pradesh, India
+              </div>
+            </div>
+            <div className="flex gap-5 items-center">
+              <Link href="/privacy" className="hover:text-white">Privacy</Link>
+              <Link href="/terms" className="hover:text-white">Terms</Link>
+              <Link href="/contact" className="flex items-center gap-1 hover:text-white">
+                Get in touch <ArrowUpRight size={12} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

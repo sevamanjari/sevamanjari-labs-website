@@ -2,5 +2,10 @@ node_modules
 .next
 out
 .env*
+!.env.example
 .DS_Store
 npm-debug.log*
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/resumes/.gitkeep
+*.tsbuildinfo
