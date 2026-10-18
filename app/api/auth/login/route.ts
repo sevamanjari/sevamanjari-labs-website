@@ -57,17 +57,18 @@ export async function POST(request: NextRequest) {
       official,
     });
 
-    const isHttps =
-      request.nextUrl.protocol === "https:" ||
-      request.headers.get("x-forwarded-proto") === "https" ||
-      Boolean(request.headers.get("referer")?.startsWith("https://"));
+    const isLocalDev =
+      process.env.NODE_ENV !== "production" &&
+      (request.nextUrl.hostname === "localhost" || request.nextUrl.hostname === "127.0.0.1");
+
+    const isSecure = process.env.NODE_ENV === "production" && !isLocalDev;
 
     // Set HTTP-only session cookie
     response.cookies.set({
       name: COOKIE_NAME,
       value: token,
       httpOnly: true,
-      secure: isHttps,
+      secure: isSecure,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days

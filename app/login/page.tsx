@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,11 +11,33 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data?.authenticated) {
+          router.replace(callbackUrl || "/dashboard");
+        } else {
+          setCheckingAuth(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setCheckingAuth(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router, callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +64,26 @@ function LoginForm() {
       setLoading(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-[#fffaf2] brand-grid flex flex-col justify-center items-center py-12 px-4 font-sans">
+        <div className="text-center">
+          <div className="inline-block bg-white p-3 rounded-2xl shadow-sm border border-zinc-200/80 mb-4 animate-pulse">
+            <Image
+              src="/logo.png"
+              alt="SevaManjari Labs"
+              width={220}
+              height={70}
+              className="h-12 w-auto object-contain mx-auto"
+              priority
+            />
+          </div>
+          <p className="text-sm font-medium text-zinc-500">Checking active session...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fffaf2] brand-grid flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
