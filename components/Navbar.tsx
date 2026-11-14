@@ -10,6 +10,7 @@ const links = [
   ["Services", "/services"],
   ["Products", "/products"],
   ["Careers", "/careers"],
+  ["Internship", "/internship"],
   ["Contact", "/contact"],
 ];
 
@@ -38,16 +39,21 @@ export default function Navbar() {
             priority
           />
         </Link>
-        <nav className="hidden items-center gap-7 md:flex">
-          {links.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm font-medium text-zinc-700 hover:text-[#8b0000] transition-colors"
-            >
-              {label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-6 lg:gap-7 md:flex">
+          {links.map(([label, href]) => {
+            const isActive = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm font-medium transition-colors ${
+                  isActive ? "text-[#8b0000] font-semibold" : "text-zinc-700 hover:text-[#8b0000]"
+                }`}
+              >
+                {label}
+              </Link>
+            );
+          })}
           <Link href="/contact" className="btn-primary py-2.5">
             Start a conversation <ArrowUpRight size={16} />
           </Link>
@@ -63,16 +69,21 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-zinc-200 bg-[#fffaf2] px-5 py-5 md:hidden">
           <nav className="container-x flex flex-col gap-4">
-            {links.map(([label, href]) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className="py-1 text-base font-semibold"
-              >
-                {label}
-              </Link>
-            ))}
+            {links.map(([label, href]) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className={`py-1 text-base ${
+                    isActive ? "font-bold text-[#8b0000]" : "font-semibold text-zinc-800 hover:text-[#8b0000]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
             <Link href="/contact" onClick={() => setOpen(false)} className="btn-primary">
               Start a conversation
             </Link>

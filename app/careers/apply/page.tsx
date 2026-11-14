@@ -41,6 +41,7 @@ interface JobInfo {
 function ApplyForm() {
   const searchParams = useSearchParams();
   const initialJobId = searchParams.get("jobId") || "";
+  const initialRole = searchParams.get("role") || "";
 
   // Open proposal mode if explicitly requested as 'open' or if no specific job ID was provided
   const isOpen = initialJobId === "open" || !initialJobId;
@@ -49,7 +50,7 @@ function ApplyForm() {
   const [loadingJobs, setLoadingJobs] = useState(true);
 
   // Custom fields for Open Proposal
-  const [customRoleTitle, setCustomRoleTitle] = useState("");
+  const [customRoleTitle, setCustomRoleTitle] = useState(initialRole || "");
   const [customDepartment, setCustomDepartment] = useState("Engineering & Technology");
 
   // Resume Mode: "file" (direct PDF upload) or "link" (URL)
@@ -79,6 +80,9 @@ function ApplyForm() {
     if (isOpen) {
       setSelectedJob(null);
       setLoadingJobs(false);
+      if (initialRole) {
+        setCustomRoleTitle(initialRole);
+      }
       return;
     }
 

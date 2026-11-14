@@ -100,9 +100,14 @@ export default async function Careers() {
             Send us your profile, share your GitHub or portfolio, and tell us what you would like to build.
           </p>
         </div>
-        <Link href="/careers/apply?jobId=open" className="btn-secondary whitespace-nowrap">
-          Send open proposal
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/internship" className="btn-secondary whitespace-nowrap">
+            Internship Program
+          </Link>
+          <Link href="/careers/apply?jobId=open" className="btn-primary whitespace-nowrap">
+            Send open proposal
+          </Link>
+        </div>
       </div>
     </div>
   );
